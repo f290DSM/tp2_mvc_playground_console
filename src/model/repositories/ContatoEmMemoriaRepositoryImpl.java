@@ -1,18 +1,20 @@
-package model;
+package model.repositories;
 
 import java.util.List;
 
+import model.ContatoVO;
+
 public class ContatoEmMemoriaRepositoryImpl implements IContatoRepository {
 
-    private List<Contato> contatos;
+    private List<ContatoVO> contatos;
 
     @Override
-    public void salvar(Contato contato) {
+    public void salvar(ContatoVO contato) {
         this.contatos.add(contato);
     }
 
     @Override
-    public Contato atualizar(Contato contato) {
+    public ContatoVO atualizar(ContatoVO contato) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'atualizar'");
     }
@@ -27,7 +29,7 @@ public class ContatoEmMemoriaRepositoryImpl implements IContatoRepository {
     }
 
     @Override
-    public Contato buscarPorEmail(String email) {
+    public ContatoVO buscarPorEmail(String email) {
         return this.contatos
                 .stream()
                 .filter(c -> c.getEmail().equals(email))
@@ -36,7 +38,7 @@ public class ContatoEmMemoriaRepositoryImpl implements IContatoRepository {
     }
 
     @Override
-    public List<Contato> buscarTodos() {
+    public List<ContatoVO> buscarTodos() {
         return this.contatos;
     }
 
