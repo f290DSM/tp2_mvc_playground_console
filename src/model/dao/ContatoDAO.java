@@ -1,12 +1,10 @@
 package model.dao;
 
-import java.lang.Thread.State;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +21,7 @@ public class ContatoDAO {
         this.log = Logger.getLogger(ContatoDAO.class.getName());
     }
 
-    public void salvar(ContatoVO contato) {
+    public void salvar(ContatoVO contato) throws SQLException {
         try {
             String query = """
                     INSERT INTO contatos (nome, email, telefone) VALUES
@@ -43,17 +41,42 @@ public class ContatoDAO {
             statement.close();
         } catch (SQLException e) {
             log.log(Level.SEVERE, "Falha ao salvar novo contato.", e);
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
-    ContatoVO atualizar(ContatoVO contato) {
-        return null;
+    public void atualizar(ContatoVO contato) throws SQLException {
+        try {
+            String sql = """
+                    UPDATE contatos SET nome = '%s', email = '%s', telefone = '%s'
+                    WHERE id = %d;
+                    """;
+            String query = sql.formatted(
+                    contato.getNome(),
+                    contato.getEmail(),
+                    contato.getTelefone(),
+                    contato.getId());
 
+            Statement statement = connection.createStatement();
+            statement.execute(query);
+
+            log.info("Contato atualizado com sucesso.");
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "Falha ao atualizar contato.", e);
+            throw e;
+        }
     }
 
-    void excluir(Integer id) {
-
+    public void excluir(Integer id) throws SQLException {
+        try {
+            String sql = "DELETE FROM contatos WHERE id = " + id;
+            Statement statement = connection.createStatement();
+            statement.execute(sql);
+            log.info("Contato excluído com sucesso.");
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "Falha ao excluir contato", e);
+            throw e;
+        }
     }
 
     public ContatoVO buscarPorEmail(String email) {
@@ -69,13 +92,13 @@ public class ContatoDAO {
                 log.info("Consulta realizada com sucesso.");
                 return contatoVO;
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             log.log(Level.SEVERE, "Falha ao consultar contatos", e);
         }
         return null;
     }
 
-    public List<ContatoVO> buscarTodos() throws SQLException {
+    public List<ContatoVO> buscarTodos() {
         List<ContatoVO> contatos = new ArrayList<>();
         String sql = "SELECT id, nome, email, telefone FROM contatos";
 

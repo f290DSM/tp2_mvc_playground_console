@@ -1,39 +1,56 @@
 package model.repositories;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import model.ContatoVO;
+import model.dao.ContatoDAO;
 
 public class ContatoMySqlRepositoryImpl implements IContatoRepository {
 
-    @Override
-    public void salvar(ContatoVO contato) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'salvar'");
+    private final ContatoDAO dao;
+    private final Logger log;
+
+    public ContatoMySqlRepositoryImpl(ContatoDAO dao) {
+        this.dao = dao;
+        this.log = Logger.getLogger(ContatoMySqlRepositoryImpl.class.getName());
     }
 
     @Override
-    public ContatoVO atualizar(ContatoVO contato) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'atualizar'");
+    public void salvar(ContatoVO contato) throws Exception {
+        this.dao.salvar(contato);
     }
 
     @Override
-    public void excluir(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'excluir'");
+    public ContatoVO atualizar(ContatoVO contato) throws Exception {
+        try {
+            ContatoVO resultado = this.dao.buscarPorEmail(contato.getEmail());
+            if (Objects.isNull(resultado))
+                throw new Exception("Contato não encontrado. E-mail: %s.".formatted(contato.getEmail()));
+            this.dao.atualizar(contato);
+            return this.dao.buscarPorEmail(contato.getEmail());
+        } catch (Exception e) {
+            log.log(Level.WARNING, e.getLocalizedMessage(), e);
+            throw new Exception(e);
+        }
+    }
+
+    @Override
+    public void excluir(Integer id) throws SQLException {
+        this.dao.excluir(id);
     }
 
     @Override
     public ContatoVO buscarPorEmail(String email) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'buscarPorEmail'");
+        return this.dao.buscarPorEmail(email);
     }
 
     @Override
     public List<ContatoVO> buscarTodos() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'buscarTodos'");
+        return dao.buscarTodos();
     }
-    
+
 }

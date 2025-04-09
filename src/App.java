@@ -1,30 +1,32 @@
-import java.sql.Connection;
-import java.sql.ResultSet;
-
-import model.ContatoVO;
-import model.dao.ContatoDAO;
-import model.factory.ConnectionFactory;
-
 public class App {
+
     public static void main(String[] args) throws Exception {
-        Connection connection = ConnectionFactory.getConnection();
-        ContatoDAO dao = new ContatoDAO(connection);
 
-        ContatoVO c1 = new ContatoVO(null,
-                "Alfredo Silva",
-                "a.silva@gmail.com",
-                "(19)98888-7777");
+        System.out.println(args[0]);
 
-        dao.salvar(c1);
+        //TODO: Criar menu para seleção de funções: 
+        /*
+        *   1. Criar
+        *   2. Listar
+        *   3. Buscar
+        *   4. Atualizar
+        *   5. Excluir
+        *   6. Sair
+        */
 
-        // ResultSet rst = connection
-        // .createStatement()
-        // .executeQuery("select version() as versao;");
+        // TODO: Mover menu para classe View
 
-        // if (rst.next()) {
-        // System.out.println(rst.getString("versao"));
-        // }
+        /*
+         * A classe View deverá conter a dependencia da classe ContatoController
+         * 
+         * Deverá também conter o menu de opções
+         * 
+         * Cada opção do menu deverá realizar uma função do controller
+         * 
+         * NÃO precisa implementar a lógica de negócio do controller
+         *
+         */
 
-        // rst.close();
+
     }
 }
